@@ -4,6 +4,7 @@ import com.insidion.anl.o3.Controller;
 import com.insidion.anl.o3.Stopwatch;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -50,7 +51,12 @@ public abstract class Simulation implements Runnable {
 
     @Override
     public void run() {
-        while (runs < 600) {
+        try {
+            prepareStatements();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        while (runs < 10) {
             stopwatch.start();
 
             runSimulation();
@@ -62,7 +68,9 @@ public abstract class Simulation implements Runnable {
         controller.simulationFinished(this);
     }
 
-    protected boolean ShouldWeDoIt(double chance) {
+    protected boolean shouldWeDoIt(double chance) {
         return chance > (new Random().nextDouble());
     }
+
+    protected abstract void prepareStatements() throws SQLException;
 }

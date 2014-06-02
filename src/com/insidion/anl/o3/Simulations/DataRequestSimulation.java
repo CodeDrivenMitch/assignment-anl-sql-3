@@ -7,9 +7,6 @@ import java.sql.Connection;
 
 import static java.lang.Thread.sleep;
 
-/**
- * Created by mitchell on 6/2/2014.
- */
 public class DataRequestSimulation extends Simulation {
 
     public DataRequestSimulation(Connection con, Controller controller) {
@@ -24,5 +21,10 @@ public class DataRequestSimulation extends Simulation {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void prepareStatements() {
+
     }
 }
