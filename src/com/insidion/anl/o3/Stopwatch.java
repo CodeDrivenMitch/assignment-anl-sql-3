@@ -6,8 +6,8 @@ public class Stopwatch {
     /**
      * Fields
      */
-    private Date startTime;
-    private Date endTime;
+    private long startTime = -1;
+    private long endTime = -1;
 
     /**
      * Starts the stopwatch
@@ -15,14 +15,14 @@ public class Stopwatch {
     public void start() {
         // reset it just to be sure
         reset();
-        this.startTime = new Date();
+        this.startTime = System.currentTimeMillis();
     }
 
     /**
      * Stops the stopwatch
      */
     public void stop() {
-        this.endTime = new Date();
+        this.endTime = System.currentTimeMillis();
     }
 
     /**
@@ -30,11 +30,11 @@ public class Stopwatch {
      * @return Result of the measurement
      */
     public long result() {
-        if(this.startTime == null || this.endTime == null) {
+        if(this.startTime == -1 || this.endTime == -1) {
             return -1;
         }
 
-        return this.endTime.getTime() - this.startTime.getTime();
+        return this.endTime - this.startTime;
     }
 
     /**
@@ -42,7 +42,7 @@ public class Stopwatch {
      * @return Result of the measurement
      */
     public long stopAndResult() {
-        this.endTime = new Date();
+        stop();
         return result();
     }
 
@@ -50,7 +50,7 @@ public class Stopwatch {
      * Resets the stopwatch
      */
     public void reset() {
-        this.startTime = null;
-        this.endTime = null;
+        this.startTime = -1;
+        this.endTime = -1;
     }
 }
