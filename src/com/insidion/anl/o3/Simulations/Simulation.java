@@ -6,6 +6,7 @@ import com.insidion.anl.o3.Stopwatch;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by mitchell on 6/2/2014.
@@ -59,5 +60,9 @@ public abstract class Simulation implements Runnable {
         }
 
         controller.simulationFinished(this);
+    }
+
+    protected boolean ShouldWeDoIt(double chance) {
+        return chance > (new Random().nextDouble());
     }
 }

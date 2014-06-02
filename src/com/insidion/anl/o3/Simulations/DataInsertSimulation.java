@@ -15,6 +15,6 @@ public class DataInsertSimulation extends Simulation {
 
     @Override
     protected void runSimulation() {
-
+        System.out.println(ShouldWeDoIt(0.9) + "");
     }
 }
