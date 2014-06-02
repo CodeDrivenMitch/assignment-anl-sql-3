@@ -56,7 +56,7 @@ public abstract class Simulation implements Runnable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        while (runs < 10) {
+        while (runs < 600) {
             stopwatch.start();
 
             runSimulation();

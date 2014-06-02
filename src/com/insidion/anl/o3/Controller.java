@@ -5,10 +5,7 @@ import com.insidion.anl.o3.Simulations.DataRequestSimulation;
 import com.insidion.anl.o3.Simulations.Simulation;
 import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Created by mitchell on 6/2/2014.
@@ -22,8 +19,11 @@ public class Controller {
     public Controller() throws SQLException {
         connection = DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5433/Opdracht3", "anl", "anl");
-        connection.setAutoCommit(false);
+
         log.info("Database conection initialized");
+        insertNeededData();
+        connection.setAutoCommit(false);
+        connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
     }
 
     public void startSimulations() {
@@ -55,6 +55,16 @@ public class Controller {
             st.execute("TRUNCATE TABLE " + table + " CASCADE");
         }
         connection.commit();
+    }
+
+    private void insertNeededData() throws SQLException {
+        Statement st = connection.createStatement();
+        st.execute("INSERT INTO adresgegevens(straat, huisnummer, postcode, woonplaats, telefoon_nummer)" +
+                " VALUES ('sluiskreek', 36, '3079CN', 'Rotterdam', '0104792055')", Statement.RETURN_GENERATED_KEYS);
+        ResultSet rs = st.getGeneratedKeys();
+        rs.next();
+        st.execute("INSERT INTO docent(medewerkerscode, voornaam, achternaam, adres_id, geslacht) " +
+                "VALUES ('HERRM', 'Mitchell', 'Herrijgers', " + rs.getLong(1) + ", 'man')");
     }
 
 }

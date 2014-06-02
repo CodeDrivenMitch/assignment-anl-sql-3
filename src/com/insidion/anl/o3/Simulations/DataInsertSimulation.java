@@ -71,6 +71,24 @@ public class DataInsertSimulation extends Simulation {
             klasStudent.setString(1, getRandomKlas());
             klasStudent.setString(2, returnedKeyStudent);
 
+            if(getNumberOfModules() == 0 || shouldWeDoIt(1/30)) {
+                createNewModule();
+            }
+
+            if(shouldWeDoIt(1/30)) {
+                String module = createNewModule();
+                Statement st = connection.createStatement();
+                st.execute("SELECT klascode FROM klas");
+                ResultSet rs = st.getResultSet();
+                PreparedStatement ps = this.statementMap.get(InsertType.KlasModule);
+                while(rs.next()) {
+                    if(shouldWeDoIt(0.15)) {
+                        ps.setString(1, rs.getString(1));
+                        ps.setString(2, module);
+                        ps.executeUpdate();
+                    }
+                }
+            }
 
 
             connection.commit();
@@ -92,6 +110,10 @@ public class DataInsertSimulation extends Simulation {
                 "VALUES(?, ?)", Statement.RETURN_GENERATED_KEYS));
         this.statementMap.put(InsertType.Student, connection.prepareStatement("INSERT INTO student(studentnummer, voornaam, tussenvoegsel, achternaam, geslacht, adres_id)" +
                 "VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS));
+        this.statementMap.put(InsertType.Module, connection.prepareStatement("INSERT INTO modules (modulecode, modulebeheerder, start_datum, eind_datum)" +
+                "VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS));
+        this.statementMap.put(InsertType.KlasModule, connection.prepareStatement("INSERT INTO klas_modules (klas_id, module_id) " +
+                "VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS));
     }
 
     private String generateRandomString(int length) {
@@ -102,6 +124,24 @@ public class DataInsertSimulation extends Simulation {
         }
 
         return buffer.toString();
+    }
+
+    private String createNewModule() throws SQLException, ParseException {
+        PreparedStatement module = statementMap.get(InsertType.Module);
+        module.setString(1, generateRandomString(4));
+        module.setString(2, "HERRM");
+        DateFormat formatter = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
+        module.setDate(3, new Date(formatter.parse("17-June-2014 02:10:15").getTime()));
+        module.setDate(4, new Date(formatter.parse("17-June-2015 02:10:15").getTime()));
+        module.executeUpdate();
+        ResultSet returnedKeys = module.getGeneratedKeys();
+        returnedKeys.next();
+        return returnedKeys.getString(1);
+
+    }
+
+    private void createRelationStudentModule() {
+
     }
 
     private void createNewKlas() throws SQLException, ParseException {
@@ -115,6 +155,17 @@ public class DataInsertSimulation extends Simulation {
     }
 
     private int getNumberOfKlas() throws SQLException {
+        int number = 0;
+        Statement st = connection.createStatement();
+        st.execute("SELECT COUNT(*) FROM klas");
+        ResultSet rs = st.getResultSet();
+        if(rs.next()) {
+            number = rs.getInt(1);
+        }
+        return number;
+    }
+
+    private int getNumberOfModules() throws SQLException {
         int number = 0;
         Statement st = connection.createStatement();
         st.execute("SELECT COUNT(*) FROM klas");

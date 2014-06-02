@@ -7,5 +7,7 @@ public enum InsertType {
     Adres,
     Klas,
     Student,
-    KlasStudenten
+    KlasStudenten,
+    Module,
+    KlasModule
 }
