@@ -11,5 +11,6 @@ public class Main {
 
         // Make connection
         Controller controller = new Controller();
+        controller.startSimulations();
     }
 }

@@ -1,7 +1,5 @@
 package com.insidion.anl.o3;
 
-import java.util.Date;
-
 public class Stopwatch {
     /**
      * Fields
