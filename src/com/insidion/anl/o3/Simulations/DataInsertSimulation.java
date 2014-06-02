@@ -94,6 +94,11 @@ public class DataInsertSimulation extends Simulation {
             connection.commit();
 
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
             log.warn("Exception occurred during execution!", e);
         } catch (ParseException e) {
             e.printStackTrace();

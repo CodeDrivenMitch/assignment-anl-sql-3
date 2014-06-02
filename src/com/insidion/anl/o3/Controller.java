@@ -33,11 +33,11 @@ public class Controller {
         }
     }
 
-    public void simulationFinished(Simulation simulation) {
+    public synchronized void  simulationFinished(Simulation simulation) {
         log.info(simulation.getClass().getSimpleName() + " ended, Average: " + simulation.getAverageResult());
         finishedThreads++;
 
-        if(finishedThreads == 5) {
+        if(finishedThreads == 6) {
             try {
                 log.info("Cleaning up now...");
                 cleanUp();
